@@ -56,12 +56,12 @@ policy:
   obs_as_global_cond: true
   shape_meta: ${shape_meta}
 
-  use_pc_color: false
+  use_pc_color: true
   pointnet_type: "pointnet"
 
 
   pointcloud_encoder_cfg:
-    in_channels: 3
+    in_channels: 6
     out_channels: ${policy.encoder_output_dim}
     use_layernorm: true
     final_norm: layernorm # layernorm, none

@@ -131,10 +131,10 @@ logging:
   mode: online
   # name: ${training.seed}
   name: ${exp_name}
-  project: dp3
+  project: u3dp
   resume: true
   tags:
-  - dp3
+  - u3dp
 
 checkpoint:
   save_ckpt: True # if True, save checkpoint every checkpoint_every

@@ -1,0 +1,10 @@
+<mujocoinclude>
+    <body childclass="bin_base" name="binA_big">
+        <geom material="bin_red" mesh="bin_big" pos="0 0 0.045" type="mesh" conaffinity="0" contype="0" group="1"/>
+        <geom class="bin_col" pos="0 -0.1425 0.045" size="0.15 0.0075 0.045" type="box" mass=".05"/>
+        <geom class="bin_col" pos="0 0.1425 0.045" size="0.15 0.0075 0.045" type="box" mass=".05"/>
+        <geom class="bin_col" pos="0.1425 0 0.045" size="0.0075 0.135 0.045" type="box" mass=".05"/>
+        <geom class="bin_col" pos="-0.1425 0 0.045" size="0.0075 0.135 0.045" type="box" mass=".05"/>
+        <geom class="bin_col" pos="0 0 0.0075" size="0.15 0.15 0.0075" type="box" mass=".1"/>
+    </body>
+</mujocoinclude>
