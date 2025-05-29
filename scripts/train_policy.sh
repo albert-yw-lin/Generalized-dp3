@@ -4,6 +4,9 @@
 # bash scripts/train_policy.sh simple_dp3 adroit_hammer 0322 0 0
 # bash scripts/train_policy.sh dp3 metaworld_basketball 0602 0 0
 
+# bash scripts/train_policy.sh dp3 metaworld_bin-picking 0515 0 0
+# bash scripts/train_policy.sh uni3d+dp metaworld_bin-picking 0515 0 0
+
 
 
 DEBUG=False
@@ -34,8 +37,10 @@ else
     echo -e "\033[33mTrain mode\033[0m"
 fi
 
-cd 3D-Diffusion-Policy
-
+# Only cd if we're not already in the directory
+if [ ! -f "train.py" ]; then
+    cd 3D-Diffusion-Policy
+fi
 
 export HYDRA_FULL_ERROR=1 
 export CUDA_VISIBLE_DEVICES=${gpu_id}

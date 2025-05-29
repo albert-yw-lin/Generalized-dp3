@@ -1,7 +1,7 @@
 defaults:
   - task: adroit_hammer
 
-name: train_dp3
+name: train_short_dp3
 
 task_name: ${task.name}
 shape_meta: ${task.shape_meta}
@@ -27,13 +27,13 @@ policy:
   
   diffusion_step_embed_dim: 128
   down_dims:
-  - 256
   - 512
   - 1024
+  - 2048
   crop_shape:
   - 80
   - 80
-  encoder_output_dim: 64 # Now supports any dimension via projection layer
+  encoder_output_dim: 64
   horizon: ${horizon}
   kernel_size: 5
   n_action_steps: ${n_action_steps}
@@ -56,31 +56,16 @@ policy:
   obs_as_global_cond: true
   shape_meta: ${shape_meta}
 
-  use_pc_color: true
-  pointnet_type: "uni3d"
+  use_pc_color: false
+  pointnet_type: "pointnet"
 
 
   pointcloud_encoder_cfg:
-    # Model backbone settings
-    uni3d_size: "small" # "base 88M", "large 307M", "giant 1B", "tiny 6M", "small 23M"
-
-    pretrained_pc: null  # Path to backbone pretrained weights (optional)
-    drop_path_rate: 0.2  # Drop path rate for backbone
-    distributed: false  # Whether using distributed training
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    freeze_weights: true  # Whether freezing the whole uni3d model
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    load_pretrain: true  # Whether to load pretrained weights
-
-    # Point cloud encoder settings
-    group_size: 32  # Group size for point cloud processing, default to 32
-    num_group: 256  # Number of groups, default to 512
-    patch_dropout: 0.5  # Patch dropout rate
-
-    # Checkpoint settings
-    checkpoint_path: "diffusion_policy_3d/model/uni3d/model_${policy.pointcloud_encoder_cfg.uni3d_size}.pt"  # Path to the pretrained Uni3D weights
+    in_channels: 3
+    out_channels: ${policy.encoder_output_dim}
+    use_layernorm: true
+    final_norm: layernorm # layernorm, none
+    normal_channel: false
 
 
 ema:
@@ -92,14 +77,14 @@ ema:
   max_value: 0.9999
 
 dataloader:
-  batch_size: 32
+  batch_size: 128
   num_workers: 8
   shuffle: True
   pin_memory: True
   persistent_workers: False
 
 val_dataloader:
-  batch_size: 32
+  batch_size: 128
   num_workers: 8
   shuffle: False
   pin_memory: True
@@ -118,12 +103,12 @@ training:
   debug: False
   resume: True
   lr_scheduler: cosine
-  lr_warmup_steps: 500
-  num_epochs: 100
-  gradient_accumulate_every: 2
+  lr_warmup_steps: 100
+  num_epochs: 60
+  gradient_accumulate_every: 1
   use_ema: True
   rollout_every: 10
-  checkpoint_every: 20
+  checkpoint_every: 30
   val_every: 1
   sample_every: 5
   max_train_steps: null
@@ -134,19 +119,18 @@ logging:
   group: ${exp_name}
   id: null
   mode: online
-  # name: ${training.seed}
-  name: ${exp_name}
-  project: u3dp
+  name: ${now:%Y.%m.%d-%H.%M.%S}
+  project: dp3
   resume: true
   tags:
-  - u3dp
+  - dp3
 
 checkpoint:
-  save_ckpt: True # if True, save checkpoint every checkpoint_every
+  save_ckpt: False # if True, save checkpoint every checkpoint_every
   topk:
     monitor_key: test_mean_score
     mode: max
-    k: 3
+    k: 1
     format_str: 'epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt'
   save_last_ckpt: True # this only saves when save_ckpt is True
   save_last_snapshot: False

@@ -5,7 +5,7 @@ task_name: ${name}
 shape_meta: &shape_meta
   obs:
     point_cloud:
-      shape: [512, 3]
+      shape: [512, 6]
       type: point_cloud
     agent_pos:
       shape: [9]
@@ -34,4 +34,6 @@ dataset:
   pad_after: ${eval:'${n_action_steps}-1'}
   seed: 42
   val_ratio: 0.02
-  max_train_episodes: 100
+
+  max_train_episodes: 50
+
