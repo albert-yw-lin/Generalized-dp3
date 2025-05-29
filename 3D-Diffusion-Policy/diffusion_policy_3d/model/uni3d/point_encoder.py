@@ -197,10 +197,10 @@ class PointcloudEncoder(nn.Module):
 
     def forward(self, pts, colors):
         with torch.no_grad() if self.freeze_weights else contextlib.nullcontext():
-            # Convert inputs to half precision if model is frozen
-            if self.freeze_weights:
-                pts = pts.half()
-                colors = colors.half()
+            # # Convert inputs to half precision if model is frozen
+            # if self.freeze_weights:
+            #     pts = pts.half()
+            #     colors = colors.half()
             
             # divide the point cloud in the same form. This is important
             _, center, features = self.group_divider(pts, colors) # pts: B N 3, colors: B N 3
