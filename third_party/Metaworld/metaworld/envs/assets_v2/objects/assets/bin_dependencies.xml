@@ -25,6 +25,7 @@
 
     <asset>
         <mesh file="../objects/meshes/bin/bin.stl" name="bin"/>
+        <mesh file="../objects/meshes/bin/bin.stl" name="bin_big" scale="1.5 1.5 1.5"/>
     </asset>
 
 </mujocoinclude>

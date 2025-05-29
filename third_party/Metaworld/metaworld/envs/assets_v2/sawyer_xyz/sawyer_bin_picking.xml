@@ -1,4 +1,7 @@
-<mujoco>
+<!-- =========test 0: switch two bin, same start/goal position -->
+<!-- Red->Blue -->
+
+<!-- <mujoco>
     <include file="../scene/basic_scene.xml"/>
     <include file="../objects/assets/bin_dependencies.xml"/>
     <include file="../objects/assets/xyz_base_dependencies.xml"/>
@@ -20,6 +23,116 @@
             <include file="../objects/assets/binB.xml"/>
         </body>
 
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close" kp="400"  user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close" kp="400"  user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
+    </equality>
+</mujoco> -->
+
+<!-- =========test 1: switch two bin, same start/goal position -->
+<!-- BLUE->RED -->
+
+<!-- <mujoco>
+    <include file="../scene/basic_scene.xml"/>
+    <include file="../objects/assets/bin_dependencies.xml"/>
+    <include file="../objects/assets/xyz_base_dependencies.xml"/>
+
+    <worldbody>
+        <include file="../objects/assets/xyz_base.xml"/>
+
+        <body name="obj" pos="-0.12 0.7 0.04">
+            <freejoint/>
+            <include file="../objects/assets/objA.xml"/>
+        </body>
+
+
+        <body name="bin_start" pos="-0.12 0.7 0">
+            <include file="../objects/assets/binB.xml"/>
+        </body>
+
+        <body name="bin_goal" pos="0.12 0.7 0">
+            <include file="../objects/assets/binA.xml"/>
+        </body>
+
+
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close" kp="400"  user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close" kp="400"  user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
+    </equality>
+</mujoco> -->
+
+
+<!-- =========test 2: switch start and end position, also switch bin (Note: need to change sawyer_bin_picking_v2.py) -->
+<!-- RED->BLUE -->
+<!-- 
+<mujoco>
+    <include file="../scene/basic_scene.xml"/>
+    <include file="../objects/assets/bin_dependencies.xml"/>
+    <include file="../objects/assets/xyz_base_dependencies.xml"/>
+
+    <worldbody>
+        <include file="../objects/assets/xyz_base.xml"/>
+
+        <body name="obj" pos="0.12 0.7 0.04">
+            <freejoint/>
+            <include file="../objects/assets/objA.xml"/>
+        </body>
+
+
+        <body name="bin_start" pos="0.12 0.7 0">
+            <include file="../objects/assets/binA.xml"/>
+        </body>
+
+        <body name="bin_goal" pos="-0.12 0.7 0">
+            <include file="../objects/assets/binB.xml"/>
+        </body>
+
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close" kp="400"  user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close" kp="400"  user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
+    </equality>
+</mujoco> -->
+
+
+<!-- =========test 3: switch start and end position,(Note: need to change sawyer_bin_picking_v2.py) -->
+<!-- BLUE->RED -->
+
+<mujoco>
+    <include file="../scene/basic_scene.xml"/>
+    <include file="../objects/assets/bin_dependencies.xml"/>
+    <include file="../objects/assets/xyz_base_dependencies.xml"/>
+
+    <worldbody>
+        <include file="../objects/assets/xyz_base.xml"/>
+
+        <body name="obj" pos="0.12 0.7 0.04">
+            <freejoint/>
+            <include file="../objects/assets/objA.xml"/>
+        </body>
+
+
+        <body name="bin_start" pos="0.12 0.7 0">
+            <include file="../objects/assets/binB.xml"/>
+        </body>
+
+        <body name="bin_goal" pos="-0.12 0.7 0">
+            <include file="../objects/assets/binA.xml"/>
+        </body>
 
     </worldbody>
 
@@ -31,3 +144,40 @@
         <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
     </equality>
 </mujoco>
+
+<!-- =========test 4: use larger bin -->
+<!-- RED->BLUE -->
+ <!-- <mujoco>
+    <include file="../scene/basic_scene.xml"/>
+    <include file="../objects/assets/bin_dependencies.xml"/>
+    <include file="../objects/assets/xyz_base_dependencies.xml"/>
+
+    <worldbody>
+        <include file="../objects/assets/xyz_base.xml"/>
+
+        <!-- Place the cube in the first bin -->
+        <body name="obj" pos="-0.25 0.7 0.04">
+            <freejoint/>
+            <include file="../objects/assets/objA.xml"/>
+        </body>
+
+        <!-- First bin (start bin) - moved further left -->
+        <body name="bin_start" pos="-0.25 0.7 0">
+            <include file="../objects/assets/binA_big.xml"/>
+        </body>
+
+        <!-- Second bin (goal bin) - moved further right -->
+        <body name="bin_goal" pos="0.25 0.7 0">
+            <include file="../objects/assets/binB_big.xml"/>
+        </body>
+
+    </worldbody>
+
+    <actuator>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="r_close" kp="400"  user="1"/>
+        <position ctrllimited="true" ctrlrange="-1 1" joint="l_close" kp="400"  user="1"/>
+    </actuator>
+    <equality>
+        <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
+    </equality>
+</mujoco>  -->

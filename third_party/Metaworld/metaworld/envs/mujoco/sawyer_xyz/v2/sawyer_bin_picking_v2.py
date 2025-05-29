@@ -23,11 +23,11 @@ class SawyerBinPickingEnvV2(SawyerXYZEnv):
 
         hand_low = (-0.5, 0.40, 0.07)
         hand_high = (0.5, 1, 0.5)
-        obj_low = (-0.21, 0.65, 0.02)
-        obj_high = (-0.03, 0.75, 0.02)
+        obj_low = (0.21, 0.65, 0.02)
+        obj_high = (0.03, 0.75, 0.02)
         # Small bounds around the center of the target bin
-        goal_low = np.array([0.1199, 0.699, -0.001])
-        goal_high = np.array([0.1201, 0.701, +0.001])
+        goal_low = np.array([-0.1199, 0.699, -0.001])
+        goal_high = np.array([-0.1201, 0.701, +0.001])
 
         super().__init__(
             self.model_name,
@@ -37,10 +37,10 @@ class SawyerBinPickingEnvV2(SawyerXYZEnv):
 
         self.init_config = {
             'obj_init_angle': 0.3,
-            'obj_init_pos': np.array([-0.12, 0.7, 0.02]),
+            'obj_init_pos': np.array([0.12, 0.7, 0.02]),
             'hand_init_pos': np.array((0, 0.6, 0.2)),
         }
-        self.goal = np.array([0.12, 0.7, 0.02])
+        self.goal = np.array([-0.12, 0.7, 0.02])
         self.obj_init_pos = self.init_config['obj_init_pos']
         self.obj_init_angle = self.init_config['obj_init_angle']
         self.hand_init_pos = self.init_config['hand_init_pos']
