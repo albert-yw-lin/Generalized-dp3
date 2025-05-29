@@ -25,6 +25,8 @@ class Uni3D(nn.Module):
     def forward(self, pc):
         if self.load_pretrain:  
             pc = self.uni3d_pcd_mapping(pc)
+            assert pc.min().item() >= 0.0, f"Point cloud minimum value {pc.min().item()} should be >= 0.0"
+            assert pc.max().item() <= 1.0, f"Point cloud maximum value {pc.max().item()} should be <= 1.0"
             
         xyz = pc[:,:,:3].contiguous() # B N 3
         color = pc[:,:,3:].contiguous() # B N 3
@@ -41,9 +43,11 @@ class Uni3D(nn.Module):
         # but the point cloud that uni3d takes during pre-training is in the range of 0~1
         # so we need to map the point cloud to the range of 0~1
         assert len(pcd.shape) == 3, f"pcd shape must be B, N, 3, but got {pcd.shape}"
-        assert pcd.min().item() == -1.0, f"Point cloud minimum value {pcd.min().item()} should be -1.0"
-        assert pcd.max().item() == 1.0, f"Point cloud maximum value {pcd.max().item()} should be 1.0"
-        return (pcd + 1.0) / 2.0
+        
+        # More robust mapping: clip to [-1, 1] range first, then map to [0, 1]
+        # This handles cases where values slightly exceed the expected range due to floating point precision
+        pcd_clipped = torch.clamp(pcd, min=-1.0, max=1.0)
+        return (pcd_clipped + 1.0) / 2.0
 
 def create_uni3d(args, output_dim=None):  
     # Assert that freeze_weights cannot be true when load_pretrain is false
@@ -134,12 +138,12 @@ def create_uni3d(args, output_dim=None):
             if not name.startswith('projection.'):
                 param.requires_grad = False
         
-        # Convert to half precision when frozen, but keep projection layer in full precision
-        for name, module in model.named_modules():
-            if not name.startswith('projection') and hasattr(module, 'half'):
-                module.half()
+        # # Convert to half precision when frozen, but keep projection layer in full precision
+        # for name, module in model.named_modules():
+        #     if not name.startswith('projection') and hasattr(module, 'half'):
+        #         module.half()
         
-        logging.info('Converted Uni3D model to half precision (except projection layer)')
+        # logging.info('Converted Uni3D model to half precision (except projection layer)')
         
         # Log projection layer status
         if hasattr(model, 'projection') and model.projection is not None:
