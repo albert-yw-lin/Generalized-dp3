@@ -338,7 +338,7 @@ class TrainDP3Workspace:
         
         cfg = copy.deepcopy(self.cfg)
         
-        lastest_ckpt_path = self.get_checkpoint_path(tag="latest")
+        lastest_ckpt_path = self.get_checkpoint_path(tag="best")
         if lastest_ckpt_path.is_file():
             cprint(f"Resuming from checkpoint {lastest_ckpt_path}", 'magenta')
             self.load_checkpoint(path=lastest_ckpt_path)
@@ -355,7 +355,7 @@ class TrainDP3Workspace:
         policy.eval()
         policy.cuda()
 
-        runner_log = env_runner.run(policy, save_video=False)
+        runner_log = env_runner.run(policy, save_video=True)
         
       
         cprint(f"---------------- Eval Results --------------", 'magenta')

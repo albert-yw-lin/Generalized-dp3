@@ -17,7 +17,29 @@ class Uni3D(nn.Module):
         # Add optional projection layer to map from 1024 to desired output dimension
         self.output_dim = output_dim
         if output_dim is not None and output_dim != 1024:
+            # Option 1: Simple linear + ReLU
+            # self.projection = nn.Sequential(
+            #     nn.Linear(1024, output_dim),
+            #     nn.ReLU()
+            # )
+            
+            # Option 2: Linear + GELU (more modern, smoother)
+            self.projection = nn.Sequential(
+                nn.Linear(1024, output_dim),
+                nn.GELU()
+            )
+            
+            # Option 3: Small MLP with normalization
+            # self.projection = nn.Sequential(
+            #     nn.Linear(1024, output_dim * 2),
+            #     nn.LayerNorm(output_dim * 2),
+            #     nn.GELU(),
+            #     nn.Linear(output_dim * 2, output_dim)
+            # )
+            
+            # Current: Simple linear projection (no activation)
             self.projection = nn.Linear(1024, output_dim)
+            
             logging.info(f'Added projection layer: 1024 -> {output_dim}')
         else:
             self.projection = None

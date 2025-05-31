@@ -13,9 +13,10 @@ class SawyerButtonPressWallEnvV2(SawyerXYZEnv):
 
         hand_low = (-0.5, 0.40, 0.05)
         hand_high = (0.5, 1, 0.5)
-        obj_low = (-0.05, 0.85, 0.1149)
-        obj_high = (0.05, 0.9, 0.1151)
-
+        # obj_low = (-0.05, 0.85, 0.1149)
+        # obj_high = (0.05, 0.9, 0.1151)
+        obj_low = (-0.05, 0.85, 0.2049)
+        obj_high = (0.05, 0.9, 0.2051)
         super().__init__(
             self.model_name,
             hand_low=hand_low,
@@ -23,10 +24,12 @@ class SawyerButtonPressWallEnvV2(SawyerXYZEnv):
         )
 
         self.init_config = {
-            'obj_init_pos': np.array([0., 0.9, 0.115], dtype=np.float32),
+            # 'obj_init_pos': np.array([0., 0.9, 0.115], dtype=np.float32),
+            'obj_init_pos': np.array([0., 0.9, 0.205], dtype=np.float32),
             'hand_init_pos': np.array([0, 0.4, 0.2], dtype=np.float32),
         }
-        self.goal = np.array([0, 0.84, 0.12])
+        # self.goal = np.array([0, 0.84, 0.12])
+        self.goal = np.array([0, 0.84, 0.205])
         self.obj_init_pos = self.init_config['obj_init_pos']
         self.hand_init_pos = self.init_config['hand_init_pos']
 

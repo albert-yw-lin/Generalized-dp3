@@ -1,7 +1,7 @@
 <!-- =========test 0: switch two bin, same start/goal position -->
 <!-- Red->Blue -->
 
-<!-- <mujoco>
+<mujoco>
     <include file="../scene/basic_scene.xml"/>
     <include file="../objects/assets/bin_dependencies.xml"/>
     <include file="../objects/assets/xyz_base_dependencies.xml"/>
@@ -32,7 +32,7 @@
     <equality>
         <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
     </equality>
-</mujoco> -->
+</mujoco>
 
 <!-- =========test 1: switch two bin, same start/goal position -->
 <!-- BLUE->RED -->
@@ -112,7 +112,7 @@
 <!-- =========test 3: switch start and end position,(Note: need to change sawyer_bin_picking_v2.py) -->
 <!-- BLUE->RED -->
 
-<mujoco>
+<!-- <mujoco>
     <include file="../scene/basic_scene.xml"/>
     <include file="../objects/assets/bin_dependencies.xml"/>
     <include file="../objects/assets/xyz_base_dependencies.xml"/>
@@ -143,7 +143,7 @@
     <equality>
         <weld body1="mocap" body2="hand" solref="0.02 1"></weld>
     </equality>
-</mujoco>
+</mujoco> -->
 
 <!-- =========test 4: use larger bin -->
 <!-- RED->BLUE -->
