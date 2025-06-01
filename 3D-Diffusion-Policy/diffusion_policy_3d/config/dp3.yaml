@@ -27,9 +27,9 @@ policy:
   
   diffusion_step_embed_dim: 128
   down_dims:
+  - 256
   - 512
   - 1024
-  - 2048
   crop_shape:
   - 80
   - 80
@@ -77,14 +77,14 @@ ema:
   max_value: 0.9999
 
 dataloader:
-  batch_size: 128
+  batch_size: 64
   num_workers: 8
   shuffle: True
   pin_memory: True
   persistent_workers: False
 
 val_dataloader:
-  batch_size: 128
+  batch_size: 64
   num_workers: 8
   shuffle: False
   pin_memory: True

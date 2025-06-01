@@ -63,6 +63,9 @@ class MetaworldDataset(BaseDataset):
         }
         normalizer = LinearNormalizer()
         normalizer.fit(data=data, last_n_dims=1, mode=mode, **kwargs)
+
+        # NOTE: for Uni3D, we normalize the pcd using Uni3D's own method
+        # normalizer['point_cloud'] = SingleFieldLinearNormalizer.create_identity()
         return normalizer
 
     def __len__(self) -> int:
