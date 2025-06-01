@@ -27,9 +27,9 @@ policy:
   
   diffusion_step_embed_dim: 128
   down_dims:
-  - 256
   - 512
   - 1024
+  - 2048
   crop_shape:
   - 80
   - 80
@@ -62,14 +62,14 @@ policy:
 
   pointcloud_encoder_cfg:
     # Model backbone settings
-    uni3d_size: "large" # "base 88M", "large 307M", "giant 1B", "tiny 6M", "small 23M"
+    uni3d_size: "base" # "base 88M", "large 307M", "giant 1B", "tiny 6M", "small 23M"
 
     pretrained_pc: null  # Path to backbone pretrained weights (optional)
     drop_path_rate: 0.2  # Drop path rate for backbone
     distributed: false  # Whether using distributed training
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    freeze_weights: false  # Whether freezing the whole uni3d model
+    freeze_weights: true  # Whether freezing the whole uni3d model
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     load_pretrain: true  # Whether to load pretrained weights
@@ -119,8 +119,8 @@ training:
   resume: True
   lr_scheduler: cosine
   lr_warmup_steps: 500
-  num_epochs: 201
-  gradient_accumulate_every: 1
+  num_epochs: 200
+  gradient_accumulate_every: 2
   use_ema: True
   rollout_every: 20
   checkpoint_every: 20
