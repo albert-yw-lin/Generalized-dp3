@@ -56,12 +56,12 @@ policy:
   obs_as_global_cond: true
   shape_meta: ${shape_meta}
 
-  use_pc_color: false
+  use_pc_color: true
   pointnet_type: "pointnet"
 
 
   pointcloud_encoder_cfg:
-    in_channels: 3
+    in_channels: 6
     out_channels: ${policy.encoder_output_dim}
     use_layernorm: true
     final_norm: layernorm # layernorm, none
@@ -126,11 +126,11 @@ logging:
   - dp3
 
 checkpoint:
-  save_ckpt: False # if True, save checkpoint every checkpoint_every
+  save_ckpt: True # if True, save checkpoint every checkpoint_every
   topk:
     monitor_key: test_mean_score
     mode: max
-    k: 1
+    k: 3
     format_str: 'epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt'
   save_last_ckpt: True # this only saves when save_ckpt is True
   save_last_snapshot: False

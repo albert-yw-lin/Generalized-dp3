@@ -9,8 +9,8 @@
 
 
 
-DEBUG=True
-save_ckpt=False
+DEBUG=False
+save_ckpt=True
 
 alg_name=${1}
 task_name=${2}
