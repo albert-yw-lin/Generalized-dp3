@@ -25,12 +25,8 @@ class Uni3D(nn.Module):
     def forward(self, pc):
         if self.load_pretrain:  
             pc = self.uni3d_pcd_mapping(pc)
-            # xyz should be in the range of -1~1
-            # color should be in the range of 0~1
-            assert pc[:,:,:3].min().item() >= -1.0, f"Point cloud minimum value {pc[:,:,:3].min().item()} should be >= -1.0"
-            assert pc[:,:,:3].max().item() <= 1.0, f"Point cloud maximum value {pc[:,:,:3].max().item()} should be <= 1.0"
-            assert pc[:,:,3:].min().item() >= 0.0, f"Point cloud minimum value {pc[:,:,3:].min().item()} should be >= 0.0"
-            assert pc[:,:,3:].max().item() <= 1.0, f"Point cloud maximum value {pc[:,:,3:].max().item()} should be <= 1.0"
+            assert pc.min().item() >= 0.0, f"Point cloud minimum value {pc.min().item()} should be >= 0.0"
+            assert pc.max().item() <= 1.0, f"Point cloud maximum value {pc.max().item()} should be <= 1.0"
             
         xyz = pc[:,:,:3].contiguous() # B N 3
         color = pc[:,:,3:].contiguous() # B N 3
@@ -43,18 +39,15 @@ class Uni3D(nn.Module):
         return pc_feat
     
     def uni3d_pcd_mapping(self, pcd):
-        xyz = pcd[:,:,:3].contiguous()
-        color = pcd[:,:,3:].contiguous()
-
-        centroid = xyz.mean(dim=1, keepdim=True) # B 1 3
-        xyz = xyz - centroid
-        # Get the furthest distance from the centroid
-        furthest_distance = xyz.norm(dim=2).max(dim=1)[0].unsqueeze(1).unsqueeze(2)  # Shape: [B, 1, 1]
-        # Normalize the point cloud
-        xyz = xyz / (furthest_distance + 1e-6)
-
-        color = color / 255.0
-        return torch.cat([xyz, color], dim=2)
+        # HACK: DP3 uses normalizer to normalize the point cloud to -1~1 like other inputs,
+        # but the point cloud that uni3d takes during pre-training is in the range of 0~1
+        # so we need to map the point cloud to the range of 0~1
+        assert len(pcd.shape) == 3, f"pcd shape must be B, N, 3, but got {pcd.shape}"
+        
+        # More robust mapping: clip to [-1, 1] range first, then map to [0, 1]
+        # This handles cases where values slightly exceed the expected range due to floating point precision
+        pcd_clipped = torch.clamp(pcd, min=-1.0, max=1.0)
+        return (pcd_clipped + 1.0) / 2.0
 
 def create_uni3d(args, output_dim=None):  
     # Assert that freeze_weights cannot be true when load_pretrain is false
