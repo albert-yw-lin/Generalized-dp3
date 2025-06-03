@@ -9,7 +9,7 @@ import logging
 from .point_encoder import PointcloudEncoder
 
 class Uni3D(nn.Module):
-    def __init__(self, point_encoder, output_dim=None, load_pretrain=None):
+    def __init__(self, point_encoder, output_dim=None, load_pretrain=None, use_input_projection=False):
         super().__init__()
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
         self.point_encoder = point_encoder
@@ -21,6 +21,12 @@ class Uni3D(nn.Module):
             logging.info(f'Added projection layer: 1024 -> {output_dim}')
         else:
             self.projection = None
+            
+        if use_input_projection:
+            self.input_projection = nn.Linear(6, 6)
+            logging.info(f'Added input projection layer: 6 -> 6')
+        else:
+            self.input_projection = None
 
     def forward(self, pc):
         if self.load_pretrain:  
@@ -31,7 +37,10 @@ class Uni3D(nn.Module):
             assert pc[:,:,:3].max().item() <= 1.0, f"Point cloud maximum value {pc[:,:,:3].max().item()} should be <= 1.0"
             assert pc[:,:,3:].min().item() >= 0.0, f"Point cloud minimum value {pc[:,:,3:].min().item()} should be >= 0.0"
             assert pc[:,:,3:].max().item() <= 1.0, f"Point cloud maximum value {pc[:,:,3:].max().item()} should be <= 1.0"
-            
+        
+        if self.input_projection is not None:
+            pc = self.input_projection(pc)
+        
         xyz = pc[:,:,:3].contiguous() # B N 3
         color = pc[:,:,3:].contiguous() # B N 3
         pc_feat = self.point_encoder(xyz, color)
@@ -72,7 +81,7 @@ def create_uni3d(args, output_dim=None):
     point_encoder = PointcloudEncoder(point_transformer, args)
 
     # uni3d model with optional output dimension
-    model = Uni3D(point_encoder=point_encoder, output_dim=output_dim, load_pretrain=args.load_pretrain)
+    model = Uni3D(point_encoder=point_encoder, output_dim=output_dim, load_pretrain=args.load_pretrain, use_input_projection=args.use_input_projection)
     
     # Only load pretrained weights if load_pretrain is True
     if getattr(args, 'load_pretrain', True):
@@ -102,11 +111,11 @@ def create_uni3d(args, output_dim=None):
         filtered_model_keys = set()
         
         for key, value in sd.items():
-            if not key.startswith('projection.'):
+            if not key.startswith('projection.') and not key.startswith('input_projection.'):
                 filtered_sd[key] = value
         
         for key in model_state_dict.keys():
-            if not key.startswith('projection.'):
+            if not key.startswith('projection.') and not key.startswith('input_projection.'):
                 filtered_model_keys.add(key)
         
         # Check which parameters are in the model but not in the checkpoint (missing)
@@ -142,7 +151,7 @@ def create_uni3d(args, output_dim=None):
         
         # Freeze all parameters except projection layer
         for name, param in model.named_parameters():
-            if not name.startswith('projection.'):
+            if not name.startswith('projection.') and not name.startswith('input_projection.'):
                 param.requires_grad = False
         
         # # Convert to half precision when frozen, but keep projection layer in full precision
@@ -155,12 +164,16 @@ def create_uni3d(args, output_dim=None):
         # Log projection layer status
         if hasattr(model, 'projection') and model.projection is not None:
             logging.info('Projection layer remains trainable and in full precision')
+            
+        if hasattr(model, 'input_projection') and model.input_projection is not None:
+            logging.info('Input projection layer remains trainable and in full precision')
     
     # Count parameters
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     point_encoder_params = sum(p.numel() for p in model.point_encoder.parameters())
     projection_params = sum(p.numel() for p in model.projection.parameters()) if hasattr(model, 'projection') and model.projection is not None else 0
+    input_projection_params = sum(p.numel() for p in model.input_projection.parameters()) if hasattr(model, 'input_projection') and model.input_projection is not None else 0
     
     logging.info(f"Model parameters: {total_params:,} total")
     logging.info(f"Trainable parameters: {trainable_params:,}")
@@ -168,7 +181,8 @@ def create_uni3d(args, output_dim=None):
     logging.info(f"Point encoder parameters: {point_encoder_params:,}")
     if projection_params > 0:
         logging.info(f"Projection layer parameters: {projection_params:,}")
-    
+    if input_projection_params > 0: 
+        logging.info(f"Input projection layer parameters: {input_projection_params:,}")
     return model
 
 def get_uni3d_size_args(uni3d_size):
