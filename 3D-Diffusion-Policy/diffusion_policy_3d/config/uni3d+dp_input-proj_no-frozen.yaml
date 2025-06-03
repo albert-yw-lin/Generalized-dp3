@@ -74,10 +74,10 @@ policy:
     freeze_weights: false  # Whether freezing the whole uni3d model
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    load_pretrain: false  # Whether to load pretrained weights
+    load_pretrain: true  # Whether to load pretrained weights
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify this for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    use_input_projection: false  # Whether to use input projection
+    use_input_projection: true  # Whether to use input projection
 
     # Point cloud encoder settings
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NOTE: modify these two for experiment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -87,7 +87,7 @@ policy:
     patch_dropout: 0.5  # Patch dropout rate
 
     # Checkpoint settings
-    checkpoint_path: "diffusion_policy_3d/model/uni3d/model_${policy.pointcloud_encoder_cfg.uni3d_size}.pt"  # Path to the pretrained Uni3D weights
+    checkpoint_path: "data/models/uni3d/model_${policy.pointcloud_encoder_cfg.uni3d_size}.pt"  # Path to the pretrained Uni3D weights
 
 
 ema:
